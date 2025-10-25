@@ -1,8 +1,8 @@
 import axios from 'axios';
 
 // Determine API base URL based on environment
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:4000';
-
+const API_BASE_URL = import.meta.env.VITE_API_URL;
+// const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:4000';
 // Create axios instance with default config
 const apiClient = axios.create({
   baseURL: `${API_BASE_URL}/api/v1`,
@@ -15,24 +15,24 @@ const apiClient = axios.create({
 
 // Request interceptor to add auth token
 apiClient.interceptors.request.use(
-  (config) => {
+  config => {
     const token = localStorage.getItem('adminToken');
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
     return config;
   },
-  (error) => {
+  error => {
     return Promise.reject(error);
   }
 );
 
 // Response interceptor to handle errors
 apiClient.interceptors.response.use(
-  (response) => {
+  response => {
     return response;
   },
-  (error) => {
+  error => {
     // Handle 401 Unauthorized
     if (error.response?.status === 401) {
       localStorage.removeItem('adminToken');
